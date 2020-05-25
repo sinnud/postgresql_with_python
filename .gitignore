@@ -1,0 +1,10 @@
+# virtual environment folder
+venv
+# Python log file
+*.log
+# Python internal folder
+.idea/
+# Python cache
+app/__pycache__/
+functional_tests/__pycache__/
+unit_tests/__pycache__/
