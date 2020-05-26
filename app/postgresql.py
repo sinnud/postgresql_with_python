@@ -18,7 +18,7 @@ class PGConnect(object):
     def __del__(self):
         if self.conn:
             self.conn.close()
-            logger.debug("Connection to database closed")
+            logger.debug(f"Connection to database '{self.host}' closed")
 
     def cursor(self):
         if not self.conn or self.conn.closed or self.conn.cursor().closed:
@@ -26,6 +26,7 @@ class PGConnect(object):
         return self.conn.cursor()
 
     def connect(self):
+        logger.debug(f"Connection to '{self.host}' postgresql on database '{self.dbname}'...")
         self.conn = psycopg2.connect(self.conn_string)
         self.conn.set_session(autocommit=True)
         self.conn.set_client_encoding('UTF8')
@@ -38,11 +39,12 @@ class PGConnect(object):
         cursor.execute(query)
         log_message = f'Executed query:\n\n {query}  \n\n' \
             f'Rows affected : {cursor.rowcount}, took {time.time() - start} seconds.'
+        logger.debug(log_message)
 
         try:
             rst = cursor.fetchall()
         except Exception as e:
             return cursor
         if len(rst) < 1000:
-            logger.debug(f'# Query  result : {rst}.')
+            logger.debug(f'# Query result : {rst}.')
         return rst
